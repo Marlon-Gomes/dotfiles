@@ -89,3 +89,28 @@ if [ -f ~/.profile-Macaulay2 ]
 then . ~/.profile-Macaulay2
 fi
 ## Macaulay 2 end
+
+## Resolve PATH conflicts between conda and brew
+brew() {
+    local -a conda_envs
+    local conda_init_shlvl="$CONDA_SHLVL"
+
+    if [ "$conda_init_shlvl" -ne 0 ]; then
+        while [ "$CONDA_SHLVL" -gt 0  ]; do
+            conda_envs=("$CONDA_DEFAULT_ENV" $conda_envs)
+            conda deactivate
+        done
+    fi
+
+    command brew $@
+    local brew_status=$?
+
+    if [ "$conda_init_shlvl" -ne 0 ]; then
+        for env in $conda_envs; do
+        conda activate "$env"
+        done
+        unset env
+    fi
+
+    return "$brew_status"
+}
