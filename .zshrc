@@ -84,12 +84,6 @@ eval "$(conda "shell.$(basename "${SHELL}")" hook)"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-## Macaulay 2 start
-if [ -f ~/.profile-Macaulay2 ]
-then . ~/.profile-Macaulay2
-fi
-## Macaulay 2 end
-
 ## Resolve PATH conflicts between conda and brew
 brew() {
     local -a conda_envs
