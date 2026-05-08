@@ -1,0 +1,39 @@
+# VCS
+^/\.git$
+^/\.gitignore$
+^/\.gitattributes$
+^/\.svn$
+^/\.hg$
+^/CVS$
+^/RCS$
+^/_darcs$
+
+# macOS
+^/\.DS_Store$
+^/\.AppleDouble$
+^/\.LSOverride$
+^/Icon\r$
+^/._.*
+
+# Linux / desktop
+^/\.Trash-.*$
+^/\.directory$
+
+# Editor / swap / backup files
+.*~
+^/#.*#$
+^/\.#.*
+^/.*\.swp$
+^/.*\.swo$
+^/.*\.swx$
+^/.*\.tmp$
+^/.*\.temp$
+^/.*\.bak$
+^/.*\.orig$
+^/.*\.rej$
+
+# Logs / build leftovers
+^/.*\.log$
+^/.*\.out$
+^/.*\.pid$
+^/.*\.seed$

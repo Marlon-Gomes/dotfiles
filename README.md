@@ -12,7 +12,8 @@ Preserve the desired destination path inside `core/`: top-level dotfiles such
 as `.zshrc` will land in `$HOME`, and XDG-style files under `.config/` will land
 in `$HOME/.config/`.
 
-Ensure GNU Stow is installed and available in your PATH. From the root of this repository, run:
+Ensure GNU Stow is installed and available in your PATH. From the root of this
+repository, run:
 
 ```bash
 stow -t "$HOME" core
@@ -20,6 +21,10 @@ stow -t "$HOME" core
 
 This tells GNU Stow to stow the `core` package into the home folder, creating
 the necessary symlinks.
+
+The core folder contains [`./core/stow-local-ignore`][stow-ignore], an ignore
+list that tells Stow to ignore certain files. You can read more about ignore
+lists usage and syntax in the [GNU Stow manual][stow-manual].
 
 ## Caution
 
@@ -41,3 +46,6 @@ You can do so by running:
 cd <REPOSITORY_ROOT>
 pre-commit autoupdate
 ```
+
+[stow-manual]: https://www.gnu.org/software/stow/manual/html_node/Ignore-Lists.html
+[stow-ignore]: ./core/.stow-local-ignore
