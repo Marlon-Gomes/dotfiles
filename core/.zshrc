@@ -5,20 +5,63 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Ensure zinit is installed
-# TODO: This works on MacOS after homebrew is installed. Add logic to use the
-# fallback option otherwise.
-## Set the directory we want to store zinit and plugins
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
-## Download Zinit, if not installed
-if [ ! -d "$ZINIT_HOME" ]; then
-   mkdir -p "$(dirname $ZINIT_HOME)"
-   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
-## Load zinit ##
-source /opt/homebrew/opt/zinit/zinit.zsh # if installed by Homebrew on macos
-#source ${ZINIT_HOME}/zinit.zsh
+load_zinit() {
+    local zinit_file=""
+    local os
+    os="$(uname -s)"
+
+    local -a mac_candidates linux_candidates
+    local brew_prefix="${HOMEBREW_PREFIX:-}"
+
+    mac_candidates=()
+    if [ -n "$brew_prefix" ] && [ -d "$brew_prefix" ]; then
+        mac_candidates+=(
+            "$brew_prefix/opt/zinit/zinit.zsh"
+        )
+    fi
+    mac_candidates+=(
+        "/opt/homebrew/opt/zinit/zinit.zsh"
+        "/usr/local/opt/zinit/zinit.zsh"
+    )
+    linux_candidates=(
+        "$ZINIT_HOME/zinit.zsh"
+        "$HOME/.zinit/bin/zinit.zsh"
+    )
+
+    case "$os" in
+        Darwin)
+            for candidate in "${mac_candidates[@]}"; do
+                if [ -r "$candidate" ]; then
+                    zinit_file="$candidate"
+                    break
+                fi
+            done
+        ;;
+        Linux)
+            for candidate in "${linux_candidates[@]}"; do
+                if [ -r "$candidate" ]; then
+                    zinit_file="$candidate"
+                    break
+                fi
+            done
+        ;;
+    esac
+
+    ## Download Zinit, if not installed
+    if [ -z "$zinit_file" ]; then
+        mkdir -p "$(dirname "$ZINIT_HOME")"
+        git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+        zinit_file="$ZINIT_HOME/zinit.zsh"
+    fi
+
+    ## Load zinit ##
+    source "$zinit_file"
+}
+
+load_zinit
 
 # Add Powerlevel10k (as a zinit plugin)
 zinit ice depth=1; zinit light romkatv/powerlevel10k
@@ -48,7 +91,7 @@ bindkey '^n' history-search-forward
 
 # History
 HISTSIZE=5000
-HISTFILE=~/.zsh_history
+HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
 
@@ -68,43 +111,51 @@ zstyle ':completion:*' menu no # will be replaced by fzf-tab
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 
 # Aliases
-alias ls='ls --color'
-alias llvm-clang='/opt/homebrew/opt/llvm/bin/clang'
-alias llvm-clang++='/opt/homebrew/opt/llvm/bin/clang++'
-alias run-clang-tidy='/opt/homebrew/opt/llvm/bin/run-clang-tidy'
-alias scan-build='/opt/homebrew/opt/llvm/bin/scan-build'
-alias clang-format='/opt/homebrew/opt/llvm/bin/clang-format'
-alias clang-tidy='/opt/homebrew/opt/llvm/bin/clang-tidy'
-alias iwyu='/opt/homebrew/opt/include-what-you-use/bin/include-what-you-use'
+[[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.zsh" ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.zsh"
+[[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.local.zsh" ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.local.zsh"
 
 # Shell integrations
-eval "$(fzf --zsh)" # Fuzzy finding
-eval "$(conda "shell.$(basename "${SHELL}")" hook)"
+if command -v fzf >/dev/null 2>&1; then
+  if [[ "$(uname -s)" == "Linux" ]] && [[ -r /usr/share/fzf/completion.zsh ]]; then
+    source /usr/share/fzf/completion.zsh
+    [[ -r /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
+  else
+    eval "$(fzf --zsh)"
+  fi
+fi
+
+
+if command -v conda >/dev/null 2>&1; then
+  eval "$(conda "shell.$(basename "${SHELL}")" hook)"
+fi
+
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-## Resolve PATH conflicts between conda and brew
-brew() {
-    local -a conda_envs
-    local conda_init_shlvl="$CONDA_SHLVL"
+if [[ "$(uname -s)" == "Darwin" ]] && command -v brew >/dev/null 2>&1 && command -v conda >/dev/null 2>&1; then
+    ## Resolve PATH conflicts between conda and brew
+    brew() {
+        local -a conda_envs
+        local conda_init_shlvl="$CONDA_SHLVL"
 
-    if [ "$conda_init_shlvl" -ne 0 ]; then
-        while [ "$CONDA_SHLVL" -gt 0  ]; do
-            conda_envs=("$CONDA_DEFAULT_ENV" $conda_envs)
-            conda deactivate
-        done
-    fi
+        if [ "$conda_init_shlvl" -ne 0 ]; then
+            while [ "$CONDA_SHLVL" -gt 0  ]; do
+                conda_envs=("$CONDA_DEFAULT_ENV" $conda_envs)
+                conda deactivate
+            done
+        fi
 
-    command brew $@
-    local brew_status=$?
+        command brew $@
+        local brew_status=$?
 
-    if [ "$conda_init_shlvl" -ne 0 ]; then
-        for env in $conda_envs; do
-        conda activate "$env"
-        done
-        unset env
-    fi
+        if [ "$conda_init_shlvl" -ne 0 ]; then
+            for env in $conda_envs; do
+            conda activate "$env"
+            done
+            unset env
+        fi
 
-    return "$brew_status"
-}
+        return "$brew_status"
+    }
+fi
