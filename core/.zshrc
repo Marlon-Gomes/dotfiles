@@ -91,7 +91,7 @@ bindkey '^n' history-search-forward
 
 # History
 HISTSIZE=5000
-HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
+HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/.zsh_history"
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
 
