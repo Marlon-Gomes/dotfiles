@@ -115,13 +115,11 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 [[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.local.zsh" ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.local.zsh"
 
 # Shell integrations
-if command -v fzf >/dev/null 2>&1; then
-  if [[ "$(uname -s)" == "Linux" ]] && [[ -r /usr/share/fzf/completion.zsh ]]; then
-    source /usr/share/fzf/completion.zsh
-    [[ -r /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
-  else
-    eval "$(fzf --zsh)"
-  fi
+if [[ "$(uname -s)" == "Linux" ]]; then
+  [[ -r /usr/share/fzf/completion.zsh ]] && source /usr/share/fzf/completion.zsh
+  [[ -r /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
+elif command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --zsh)"
 fi
 
 
