@@ -1,0 +1,29 @@
+# Disable sessions on macOS to avoid history fragmentation
+if [[ $(uname) == "Darwin" ]]; then
+  export SHELL_SESSIONS_DISABLE=1
+fi
+
+# Homebrew
+if [[ $(uname) == "Darwin" ]]; then
+  # Homebrew
+  export PATH="/opt/homebrew/bin:$PATH"
+  export HOMEBREW_GITHUB_API_TOKEN=<your-token-here>
+
+  # LLVM append to avoid conflicts with system defaults
+  export PATH="$PATH:/opt/homebrew/opt/llvm/bin"
+fi
+
+# Languages (define then PATH)
+export GOPATH="$HOME/Developer/go"
+export PATH="$PATH:$GOPATH/bin"
+
+# Ruby
+export GEM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/gem"
+export GEM_SPEC_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/gem"
+
+# iPython/Jupyter
+export IPYTHONDIR="${XDG_CONFIG_HOME:-$HOME/.config}/ipython"
+export JUPYTER_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/jupyter"
+
+# Dedupe PATH
+typeset -U path PATH

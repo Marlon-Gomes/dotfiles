@@ -113,3 +113,4 @@ zsdoc/data
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,zsh
 
 **aliases.local.zsh
+**.zshenv
