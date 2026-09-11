@@ -17,8 +17,6 @@ case "$(uname -s)" in
     alias llvm-clang++='clang++'
     alias run-clang-tidy='run-clang-tidy.py'
     alias scan-build='scan-build'
-    alias clang-format='clang-format'
-    alias clang-tidy='clang-tidy'
     alias iwyu='include-what-you-use'
     ;;
 esac
