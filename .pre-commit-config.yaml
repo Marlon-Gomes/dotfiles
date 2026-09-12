@@ -13,3 +13,16 @@ repos:
     rev: v8.30.0
     hooks:
       - id: gitleaks
+
+-   repo: local
+    hooks:
+      - id: zsh-syntax-check
+        name: zsh -n syntax check
+        # A syntax error in a stowed file breaks login on the other machine,
+        # where it is most awkward to fix. `zsh -n` parses without executing,
+        # so it is safe on files with side effects.
+        # Looped one file at a time: `zsh -n a b` would treat b as an argument
+        # to script a rather than checking it.
+        entry: bash -c 'for f in "$@"; do zsh -n "$f" || exit 1; done' --
+        language: system
+        files: '(\.zsh|/\.zshrc|/\.zprofile|/\.zshenv(\.sample)?)$'
