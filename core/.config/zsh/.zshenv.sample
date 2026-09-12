@@ -7,7 +7,7 @@ fi
 if [[ $(uname) == "Darwin" ]]; then
   # Homebrew
   export PATH="/opt/homebrew/bin:$PATH"
-  export HOMEBREW_GITHUB_API_TOKEN=<your-token-here>
+  export HOMEBREW_GITHUB_API_TOKEN="<your-token-here>"
 
   # LLVM append to avoid conflicts with system defaults
   export PATH="$PATH:/opt/homebrew/opt/llvm/bin"
