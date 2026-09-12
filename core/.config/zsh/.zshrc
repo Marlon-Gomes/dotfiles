@@ -63,16 +63,22 @@ load_zinit() {
 
 load_zinit
 
-# Add Powerlevel10k (as a zinit plugin)
+# Plugin load order is significant:
+#   1. prompt
+#   2. anything that adds to $fpath, before compinit
+#   3. snippets -- these call compdef before compinit exists; zinit queues the
+#      calls and `zinit cdreplay` replays them afterwards
+#   4. compinit, then cdreplay
+#   5. widget plugins, with zsh-syntax-highlighting strictly last so that it
+#      wraps every widget defined before it
+
+# 1. Prompt (as a zinit plugin)
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
-# Add other zsh plugins
-zinit light zsh-users/zsh-syntax-highlighting
+# 2. Completion definitions ($fpath additions must precede compinit)
 zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
-zinit light Aloxaf/fzf-tab
 
-# Add snippets
+# 3. Snippets
 zinit snippet OMZP::autojump
 zinit snippet OMZP::command-not-found
 zinit snippet OMZP::colored-man-pages
@@ -80,8 +86,16 @@ zinit snippet OMZP::gitignore
 zinit snippet OMZP::ssh # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/ssh
 zinit snippet OMZP::tailscale # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/tailscale
 
-# Load completions (https://zsh.sourceforge.io/Doc/Release/Completion-System.html)
+# 4. Load completions (https://zsh.sourceforge.io/Doc/Release/Completion-System.html)
 autoload -U compinit && compinit
+
+# Replay the compdef calls the snippets above made before compinit existed
+zinit cdreplay -q
+
+# 5. Widget plugins -- syntax highlighting LAST
+zinit light Aloxaf/fzf-tab
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-syntax-highlighting
 
 # Keybindings
 #bindkey -e (Emacs mode)
