@@ -1,0 +1,176 @@
+// Edited version of: https://github.com/DavidAnson/markdownlint/blob/v0.40.0/schema/.markdownlint.jsonc
+// Changes reflect project preferences. Rules for which the default and
+// preferred option coincide are omitted.
+{
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/v0.40.0/schema/markdownlint-config-schema.json",
+  // Default state for all rules
+  "default": true,
+
+  // Path to configuration file to extend
+  "extends": null,
+
+  // MD001/heading-increment : Heading levels should only increment by one level at a time : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md001.md
+  "MD001": {
+    "enabled": true,
+    "front_matter_title": "" // Don't count YAML front matter titles
+  },
+
+  // MD003/heading-style : Heading style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md003.md
+  "MD003": {
+    // Heading style
+    "style": "atx" // "consistent" is too vague;
+  },
+
+  // MD004/ul-style : Unordered list style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md004.md
+  "MD004": {
+    // List style
+    "style": "dash" // "consistent" is too vague;
+  },
+
+  // MD007/ul-indent : Unordered list indentation : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md007.md
+  "MD007": {
+    // Spaces for indent
+    "indent": 4,
+    // Whether to indent the first level of the list
+    "start_indented": false
+  },
+
+  // MD009/no-trailing-spaces : Trailing spaces : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md009.md
+  "MD009": {
+    // Spaces for line break
+    "br_spaces": 0, // No trailing whitespace
+    // Spaces for code blocks
+    "code_blocks": true, // No trailing whitespace in code blocks too
+    // Allow spaces for empty lines in list items
+    "list_item_empty_lines": true,
+    // Include unnecessary breaks
+    "strict": true
+  },
+
+  // MD010/no-hard-tabs : Hard tabs : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md010.md
+  "MD010": {
+    // Include code blocks
+    "code_blocks": true,
+    // Fenced code languages to ignore
+    "ignore_code_languages": ["makefile", "go"],
+    // Number of spaces for each hard tab
+    "spaces_per_tab": 1
+  },
+
+  // MD013/line-length : Line length : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md013.md
+  "MD013": {
+    // Number of characters
+    "line_length": 80,
+    // Number of characters for headings
+    "heading_line_length": 80,
+    // Number of characters for code blocks
+    "code_block_line_length": 80,
+    // Include code blocks
+    "code_blocks": true,
+    // Include tables
+    "tables": true,
+    // Include headings
+    "headings": true,
+    // Strict length checking
+    "strict": false,
+    // Stern length checking
+    "stern": true // warn only on lines containing whitespace beyond the limit
+  },
+
+  // MD024/no-duplicate-heading : Multiple headings with the same content : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md024.md
+  "MD024": {
+    // Only check sibling headings
+    "siblings_only": true // Allow duplicate headings in different scopes; use with caution as it might break #heading-name style links
+  },
+
+  // MD025/single-title/single-h1 : Multiple top-level headings in the same document : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md025.md
+  "MD025": {
+    // Heading level
+    "level": 1,
+    // RegExp for matching title in front matter
+    "front_matter_title": "" // We use title in front matter but not as heading
+  },
+
+  // MD033/no-inline-html : Inline HTML : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md033.md
+  "MD033": {
+    // Allowed elements
+    "allowed_elements": ["details", "summary"] // Useful for collapsible items
+  },
+
+  // MD035/hr-style : Horizontal rule style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md035.md
+  "MD035": {
+    // Horizontal rule style
+    "style": "---" // Consistent is too vague
+  },
+
+  // MD041/first-line-heading/first-line-h1 : First line in a file should be a top-level heading : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md041.md
+  "MD041": {
+    // Heading level
+    "level": 1,
+    // RegExp for matching title in front matter
+    "front_matter_title": "" // Don't use front matter as titles
+  },
+
+  // MD046/code-block-style : Code block style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md046.md
+  "MD046": {
+    // Block style
+    "style": "fenced" // 'consistent' is too vague
+  },
+
+  // MD048/code-fence-style : Code fence style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md048.md
+  "MD048": {
+    // Code fence style
+    "style": "backtick" // 'consistent' is too vague
+  },
+
+  // MD049/emphasis-style : Emphasis style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md049.md
+  "MD049": {
+    // Emphasis style
+    "style": "underscore" // 'consistent' is too vague
+  },
+
+  // MD050/strong-style : Strong style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md050.md
+  "MD050": {
+    // Strong style
+    "style": "asterisk" // 'consistent' is too vague
+  },
+
+  // MD054/link-image-style : Link and image style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md054.md
+  "MD054": {
+    // Allow autolinks
+    "autolink": true,
+    // Allow inline links and images
+    "inline": true,
+    // Allow full reference links and images
+    "full": true,
+    // Allow collapsed reference links and images
+    "collapsed": true,
+    // Allow shortcut reference links and images
+    "shortcut": true,
+    // Allow URLs as inline links
+    "url_inline": true
+  },
+
+  // MD055/table-pipe-style: Table pipe style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md055.md
+  "MD055" : {
+    "style": "leading_and_trailing"  // 'consistent' is too vague
+  },
+
+  // MD059/descriptive-link-text: Link text should be descriptive : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md056.md
+  "MD059" : {
+    "prohibited_texts": [
+        "click here",
+        "here",
+        "link",
+        "more",
+        "this link" // Added to default
+    ]
+  },
+
+  // MD060/table-column-style: Table column style : https://github.com/DavidAnson/markdownlint/blob/v0.40.0/doc/md060.md
+  "MD060": {
+    "enabled": true,
+    "aligned_delimiter": true, // default false
+    "style": "aligned" // default "any"
+  }
+}
