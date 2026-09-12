@@ -129,11 +129,25 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 [[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.local.zsh" ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/aliases.local.zsh"
 
 # Shell integrations
-if [[ "$(uname -s)" == "Linux" ]]; then
-  [[ -r /usr/share/fzf/completion.zsh ]] && source /usr/share/fzf/completion.zsh
-  [[ -r /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
-elif command -v fzf >/dev/null 2>&1; then
-  eval "$(fzf --zsh)"
+# fzf >= 0.48 ships its shell integration via `fzf --zsh`. Older packaged
+# builds (Debian/Ubuntu still ship 0.44) only put the scripts on disk, and the
+# path differs per distro, so fall back to a candidate list rather than
+# branching on uname.
+if command -v fzf >/dev/null 2>&1; then
+  if fzf --zsh </dev/null >/dev/null 2>&1; then
+    eval "$(fzf --zsh)"
+  else
+    for _fzf_script in \
+      /usr/share/doc/fzf/examples/key-bindings.zsh \
+      /usr/share/doc/fzf/examples/completion.zsh \
+      /usr/share/fzf/key-bindings.zsh \
+      /usr/share/fzf/completion.zsh \
+      /usr/share/zsh/vendor-integrations/fzf.zsh
+    do
+      [[ -r $_fzf_script ]] && source "$_fzf_script"
+    done
+    unset _fzf_script
+  fi
 fi
 
 
